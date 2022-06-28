@@ -22,15 +22,15 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
-        try (Session session = getSessionFactory().getCurrentSession()) {
+        String createTable = "CREATE TABLE IF NOT EXISTS users " +
+                "(id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(45) NOT NULL, " +
+                "lastName VARCHAR(45) NOT NULL, age INT NOT NULL)";
+        try (Session session = HyberUtil.getSessionFactory().getCurrentSession()) {
             session.beginTransaction();
-            session.createNativeQuery("CREATE TABLE IF NOT EXISTS user (" +
-                    "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, " +
-                    "name VARCHAR(50) NOT NULL, " +
-                    "lastName VARCHAR(50) NOT NULL, " +
-                    "age INT NOT NULL)");
-
+            session.createSQLQuery(createTable).executeUpdate();
             session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
